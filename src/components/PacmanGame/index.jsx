@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const TILE_SIZE = 80;
-const ENTITY_SIZE = 90;
+const BASE_TILE_SIZE = 80;
+const BASE_ENTITY_SIZE = 90;
 const INITIAL_LIVES = 3;
 
 const LEVELS = [
@@ -126,6 +126,8 @@ export default function PacmanGame({ onBack }) {
   const [lives, setLives] = useState(INITIAL_LIVES);
   const [gameState, setGameState] = useState('loading');
   const moveCooldown = useRef(false);
+  const [tileSize, setTileSize] = useState(BASE_TILE_SIZE);
+  const [entitySize, setEntitySize] = useState(BASE_ENTITY_SIZE);
   const [scale, setScale] = useState(1);
   const wrapperRef = useRef(null);
 
@@ -255,41 +257,54 @@ export default function PacmanGame({ onBack }) {
     }
   }, [collectibles, enemies, player, gameState, level, levelIdx, lives]);
 
-  // Update the useEffect for scaling
+  // Responsive scaling and tile size
   useEffect(() => {
     const updateScale = () => {
       if (!wrapperRef.current) return;
-      
-      // Get the wrapper's dimensions
       const wrapper = wrapperRef.current;
-      const availableWidth = wrapper.clientWidth - 32; // Account for padding
-      const availableHeight = wrapper.clientHeight - 32;
-      
-      // Calculate game dimensions
-      const gameWidth = level[0].length * TILE_SIZE;
-      const gameHeight = level.length * TILE_SIZE;
-      
-      // Calculate scale to fit both dimensions
-      const scaleX = availableWidth / gameWidth;
-      const scaleY = availableHeight / gameHeight;
-      
-      // Use the smaller scale to ensure everything fits
-      const newScale = Math.min(scaleX, scaleY, 1);
-      setScale(newScale);
+      const availableWidth = wrapper.clientWidth;
+      const availableHeight = wrapper.clientHeight;
+
+      // Try with base size
+      let tile = BASE_TILE_SIZE;
+      let entity = BASE_ENTITY_SIZE;
+      let gameWidth = level[0].length * tile;
+      let gameHeight = level.length * tile;
+      let scaleX = availableWidth / gameWidth;
+      let scaleY = availableHeight / gameHeight;
+      let scale = Math.min(scaleX, scaleY, 1);
+
+      // If scale is < 1, try to shrink tile size instead
+      if (scale < 1) {
+        tile = Math.floor(Math.min(
+          availableWidth / level[0].length,
+          availableHeight / level.length
+        ));
+        tile = Math.max(tile, 24);
+        entity = Math.floor(tile * (BASE_ENTITY_SIZE / BASE_TILE_SIZE));
+        scale = 1;
+      }
+
+      setTileSize(tile);
+      setEntitySize(entity);
+      setScale(scale);
     };
 
-    // Initial scale calculation
     updateScale();
 
-    // Add resize observer for more reliable resizing
+    // Force a recalculation after a short delay (for initial mount/layout)
+    const timeout = setTimeout(updateScale, 50);
+
     const resizeObserver = new ResizeObserver(updateScale);
     if (wrapperRef.current) {
       resizeObserver.observe(wrapperRef.current);
     }
+    window.addEventListener('resize', updateScale);
 
-    // Cleanup
     return () => {
+      clearTimeout(timeout);
       resizeObserver.disconnect();
+      window.removeEventListener('resize', updateScale);
     };
   }, [level]);
 
@@ -319,8 +334,8 @@ export default function PacmanGame({ onBack }) {
   }
 
   return (
-    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat" 
-      style={{ 
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{
         backgroundImage: 'url("/assets/pokemonwallpaper.jpg")'
       }}
     >
@@ -334,12 +349,12 @@ export default function PacmanGame({ onBack }) {
 
       <div
         ref={wrapperRef}
-        className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden"
+        className="relative w-full h-full flex items-center justify-center overflow-hidden"
       >
         <div 
           style={{
-            width: level[0].length * TILE_SIZE,
-            height: level.length * TILE_SIZE,
+            width: level[0].length * tileSize,
+            height: level.length * tileSize,
             position: 'relative',
             border: '8px solid #FFB6C1',
             borderRadius: '20px',
@@ -365,10 +380,10 @@ export default function PacmanGame({ onBack }) {
                 key={`${x}-${y}`} 
                 style={{ 
                   position: 'absolute', 
-                  left: x * TILE_SIZE, 
-                  top: y * TILE_SIZE, 
-                  width: TILE_SIZE, 
-                  height: TILE_SIZE, 
+                  left: x * tileSize, 
+                  top: y * tileSize, 
+                  width: tileSize, 
+                  height: tileSize, 
                   background: 'rgba(120, 180, 255, 0.85)',
                   borderRadius: '6px',
                   opacity: 0.9,
@@ -383,10 +398,10 @@ export default function PacmanGame({ onBack }) {
                 alt="matcha" 
                 style={{ 
                   position: 'absolute', 
-                  left: c.x * TILE_SIZE + TILE_SIZE / 6,
-                  top: c.y * TILE_SIZE + TILE_SIZE / 6,
-                  width: TILE_SIZE * 0.7,
-                  height: TILE_SIZE * 0.7,
+                  left: c.x * tileSize + tileSize / 6,
+                  top: c.y * tileSize + tileSize / 6,
+                  width: tileSize * 0.7,
+                  height: tileSize * 0.7,
                   pointerEvents: 'none',
                   filter: 'drop-shadow(0 0 2px rgba(255, 182, 193, 0.5))'
                 }} 
@@ -397,10 +412,10 @@ export default function PacmanGame({ onBack }) {
               alt="player" 
               style={{ 
                 position: 'absolute', 
-                left: player.x * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-                top: player.y * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-                width: ENTITY_SIZE, 
-                height: ENTITY_SIZE, 
+                left: player.x * tileSize + (tileSize - entitySize) / 2, 
+                top: player.y * tileSize + (tileSize - entitySize) / 2, 
+                width: entitySize, 
+                height: entitySize, 
                 zIndex: 2, 
                 pointerEvents: 'none',
                 transition: 'left 0.12s linear, top 0.12s linear' 
@@ -413,10 +428,10 @@ export default function PacmanGame({ onBack }) {
                 alt="enemy" 
                 style={{ 
                   position: 'absolute', 
-                  left: e.x * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-                  top: e.y * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-                  width: ENTITY_SIZE, 
-                  height: ENTITY_SIZE, 
+                  left: e.x * tileSize + (tileSize - entitySize) / 2, 
+                  top: e.y * tileSize + (tileSize - entitySize) / 2, 
+                  width: entitySize, 
+                  height: entitySize, 
                   zIndex: 2, 
                   pointerEvents: 'none',
                   transition: 'left 0.3s linear, top 0.3s linear' 
