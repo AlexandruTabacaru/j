@@ -23,13 +23,16 @@ const StartupAnimation = ({ onComplete }) => {
   if (!showAnimation) return null;
 
   return (
-    <div className="fixed inset-0 bg-pink-100 flex items-center justify-center z-50">
-      <div className="text-center">
-        <img 
-          src="/assets/mew.webp" 
-          alt="Mew" 
-          className="w-96 h-96 animate-bounce mb-8"
-        />
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50"
+      style={{
+        backgroundImage: 'url("/assets/sylveon.gif")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="text-center bg-white bg-opacity-70 rounded-2xl p-8 shadow-xl">
         <h1 className="text-4xl font-bold text-pink-600 animate-pulse mb-4">
           La multi ani!
         </h1>
