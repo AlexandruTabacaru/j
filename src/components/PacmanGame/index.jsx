@@ -443,8 +443,8 @@ export default function PacmanGame({ onBack }) {
       </div>
 
       <div className="flex justify-between w-full max-w-3xl px-4 absolute bottom-4">
-        <div className="text-3xl text-pink-600 font-medium bg-pink-100 bg-opacity-80 px-4 py-2 rounded-lg shadow-lg">Lives: {lives}</div>
-        <div className="text-3xl text-pink-600 font-medium bg-pink-100 bg-opacity-80 px-4 py-2 rounded-lg shadow-lg">Level: {levelIdx + 1}</div>
+        <div className="text-3xl text-pink-600 font-medium bg-pink-100 bg-opacity-80 px-4 py-2 rounded-lg shadow-lg">Vieti: {lives}</div>
+        <div className="text-3xl text-pink-600 font-medium bg-pink-100 bg-opacity-80 px-4 py-2 rounded-lg shadow-lg">Nivel: {levelIdx + 1}</div>
       </div>
 
       {gameState === 'finalwin' && (

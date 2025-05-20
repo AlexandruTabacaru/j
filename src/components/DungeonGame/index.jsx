@@ -1,29 +1,29 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const LEVELS = [
   {
     images: ['/assets/plajacorbu.jpg'],
     characterImage: '/assets/player.png',
-    question: 'Trebuie să scapăm de aici cât mai repede, trb să merg să îmi iau bully totuși mai întâi. Care e cea mai bună locație pt asta?',
+    question: 'Trebuie să scapăm de aici cât mai repede (Evident), dar trebuie sa mergem intr-un loc si mai rau mai intai. Care e cea mai bună locație pt asta?',
     answers: ['Acasă', 'La liceu', 'La job', 'La facultate'],
     correct: 1,
-    lore: 'Plaja Corbu: începutul aventurii. Unde găsim cel mai bun bully?'
+    lore: 'Cum naiba am ajuns aici..........'
   },
   {
     images: ['/assets/cnmbct.jpg'],
     characterImage: '/assets/player.png',
-    question: 'Ok, am ajuns, am luat și rucsacu, da mi-e fomica. Unde mergem și noi repede?',
+    question: 'Ok, am ajuns, am furat ceva de la Damu, da tot mi-e fomica. Unde mergem și noi repede?',
     answers: ['La Fratelli', 'La b*ta (doamne ferește)', 'Tomis Mall <3', 'Murim de foame'],
     correct: 2,
-    lore: 'CNMBCT: Rucsacul e luat, dar stomacul cere sacrificii...'
+    lore: 'Oameni cu care am socializat aici : 0'
   },
   {
     images: ['/assets/tomismall.jpg'],
     characterImage: '/assets/player.png',
-    question: 'Ah ce frumos e să dai 10 lei pe 2 burgeri și 2 cartofi. Anyway, cred că trebuie să bem ceva să ne facem praf. Ce luăm ca să ajungem la mine?',
+    question: 'Ah ce frumos e să dai 10 lei pe 2 burgeri și 2 cartofi. Anyway, cred că trebuie să bem ceva să ne facem praf dupa drumu asta lung. Ce luăm ca să ajungem la mine?',
     answers: ['48', '51', '44', '102 (wtf)'],
     correct: 0,
-    lore: 'Tomis Mall: Fast food și planuri de băut. Care e autobuzul magic?'
+    lore: 'Tomis Mall: Mogosu si McCombo la 5 lei.. ce vremuri'
   },
   {
     images: ['/assets/lift.jpeg', '/assets/casamea.jpeg', '/assets/casamea2.jpeg'],
@@ -31,7 +31,7 @@ const LEVELS = [
     question: 'Bun, acum am făcut multe râsuri dar trebuie să ajungem acasă cum am zis, unde ne despărțeam de regulă și ne luam în brațe?',
     answers: ['Coaie nu făceam asta', 'La Brick', 'La Robert acasă', 'La Skullgames'],
     correct: 1,
-    lore: 'Liftul, apoi acasă, dar unde era momentul de despărțire?'
+    lore: 'Luam liftu scuffed si facem multe rasuri (lol mai incolo)'
   },
   {
     images: ['/assets/brick.jpg'],
@@ -39,15 +39,15 @@ const LEVELS = [
     question: 'Ah ce frumos...Mega Image...sigur nu va dispărea în viitor. Vrem să facem un râs urgent pentru că ne-a luat depresia. Pe unde trecem?',
     answers: ['Casa lu Robert', 'Nu râdem', 'La școală', 'Înapoi la mine'],
     correct: 0,
-    lore: 'Brick: locul râsului și al depresiei. Care e traseul corect?'
+    lore: 'Brick: mai trb sa descriu locu asta?'
   },
   {
     images: ['/assets/casalupirlea.jpeg'],
     characterImage: '/assets/player.png',
-    question: 'Atât, orice răspuns e corect, hai acasă',
+    question: 'Aici chiar nu mai am nimic de zis. Doar pune orice raspuns gng si hai acasă',
     answers: ['a', 'b', 'c', 'd'],
     correct: null,
-    lore: 'Casa lu Pirlea: final de drum, orice alegere e bună.'
+    lore: 'c̵̭̋a̵͚͋́͝s̷͇̠̉͝a̶̧̰̰̓̈ ̷̢̩͂̈̉g̷̣͙̎̊ͅŗ̸̤͗̊͗ͅȏ̸̼̔́a̴̺̪̬̒̐z̵̝͈͉̓̕͝e̷̤̬͠į̷̦̝̈̍͂'
   },
   {
     images: ['/assets/acasa.jpeg',
@@ -58,7 +58,7 @@ const LEVELS = [
     question: 'Am ajuns :D ce facem acum?',
     answers: ['Teme', 'Ne pregatim de examen </3', 'Intram pe lol curand', 'Vb/Scroll', 'Dam startu la vara p*rno', 'Toate'],
     correct: 5,
-    lore: 'Acasă: ai evadat din Corbu! Felicitări!'
+    lore: 'HAI PE LOOOOOOOOOOOOOL'
   }
 ];
 
@@ -66,6 +66,7 @@ export default function DungeonGame({ onBack }) {
   const [level, setLevel] = useState(0);
   const [selected, setSelected] = useState(null);
   const [showResult, setShowResult] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
 
   const current = LEVELS[level];
 
@@ -78,6 +79,8 @@ export default function DungeonGame({ onBack }) {
       if (current.correct === null || current.correct === -1 || idx === current.correct) {
         if (level < LEVELS.length - 1) {
           setLevel(level + 1);
+        } else {
+          setShowCongrats(true);
         }
       }
     }, 1200);
@@ -87,6 +90,7 @@ export default function DungeonGame({ onBack }) {
     setLevel(0);
     setSelected(null);
     setShowResult(false);
+    setShowCongrats(false);
   }
 
   // Special layout for the lift/casamea/casamea2 level
@@ -241,18 +245,20 @@ export default function DungeonGame({ onBack }) {
             ))}
           </div>
           {showResult && (
-            <div className="mt-6 text-xl font-bold text-center">
+            <div className="mt-6 text-2xl font-bold text-center bg-white p-4 rounded-lg shadow-lg text-black">
               {(current.correct === null || current.correct === -1 || selected === current.correct)
-                ? 'Corect! 🎉'
-                : 'Greșit! 😢'}
+                ? 'Bravo broski :D'
+                : 'Greșit! Just say you fake gng 🥀'}
             </div>
           )}
           {level === LEVELS.length - 1 && selected === current.correct && !showResult && (
-            <div className="mt-8 text-2xl font-bold text-green-700 text-center">Ai evadat din Corbu! 🏆</div>
+            <div className="mt-8 text-3xl font-bold text-center bg-white p-6 rounded-lg shadow-lg border-4 border-green-500 text-black">
+              Ai evadat din Corbu! 🏆
+            </div>
           )}
           <button
             onClick={handleRestart}
-            className="mt-8 px-6 py-2 border-2 border-pink-300 bg-pink-100 rounded-lg text-lg font-semibold hover:bg-pink-200 transition block mx-auto"
+            className="mt-8 px-8 py-3 border-4 border-black bg-white rounded-lg text-xl font-bold hover:bg-gray-100 transition block mx-auto shadow-lg text-black"
           >
             Restart
           </button>
@@ -260,12 +266,42 @@ export default function DungeonGame({ onBack }) {
       </div>
 
       {/* Back button */}
-      <button
-        onClick={onBack}
-        className="absolute top-4 left-4 px-4 py-2 border border-fashion-white bg-white bg-opacity-70 hover:bg-fashion-white hover:text-fashion-black transition-colors duration-300 rounded-lg shadow z-30"
-      >
-        Back
-      </button>
+      <div className="absolute top-4 left-4 z-30">
+        <button
+          onClick={onBack}
+          className="px-4 py-2 border-2 border-black bg-white hover:bg-gray-100 text-black font-bold transition-colors duration-300 rounded-lg shadow-lg"
+        >
+          Back
+        </button>
+      </div>
+
+      {/* Congratulations Modal */}
+      {showCongrats && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Background with rank up animation */}
+          <div className="absolute inset-0">
+            <img
+              src="/assets/league-of-legends-rankup.gif"
+              alt="Rank Up Animation"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {/* Modal content */}
+          <div className="relative bg-black bg-opacity-80 p-8 rounded-2xl max-w-2xl mx-4 text-center">
+            <h2 className="text-4xl font-bold text-white mb-6">BRAVO!!!!!!! AM SCAPAT</h2>
+            <p className="text-xl text-white mb-8">
+              Daca nu vorbim rn, poate acum ar fi timpu sa deschizi plicul. (Daca vorbim probabil mentionez eu asta)
+            </p>
+            <button
+              onClick={handleRestart}
+              className="px-8 py-3 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-colors duration-300"
+            >
+              Play Again
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

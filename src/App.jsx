@@ -5,6 +5,7 @@ import PhotoGallery from './components/PhotoGallery'
 import VideoPlayer from './components/VideoPlayer'
 import DungeonGame from './components/DungeonGame'
 import StartupAnimation from './components/StartupAnimation'
+import MusicPlayer from './components/MusicPlayer'
 
 function App() {
   const [currentSection, setCurrentSection] = useState('startup')
@@ -39,6 +40,7 @@ function App() {
   return (
     <div className="min-h-screen bg-fashion-black text-fashion-white">
       {renderSection()}
+      <MusicPlayer isVideoMenu={currentSection === 'video'} />
     </div>
   )
 }
