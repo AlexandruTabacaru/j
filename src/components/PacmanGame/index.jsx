@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const TILE_SIZE = 32;
-const ENTITY_SIZE = 24;
+const TILE_SIZE = 80;
+const ENTITY_SIZE = 90;
 const INITIAL_LIVES = 3;
 
 const LEVELS = [
@@ -45,9 +45,14 @@ const LEVELS = [
   ],
 ];
 
-const PLAYER_IMG = '/assets/pacman.png';
-const ENEMY_IMG = '/assets/ghost.png';
-const COLLECTIBLE_IMG = '/assets/dot.png';
+const PLAYER_IMG = '/assets/pacman2.png';
+const ENEMY_IMGS = [
+  '/assets/enemy1.jpeg',
+  '/assets/enemy2.jpeg',
+  '/assets/enemy3.jpeg'
+];
+const COLLECTIBLE_IMG = '/assets/matcha.png';
+const GAMEOVER_IMG = '/assets/gameover.jpeg';
 
 const DIRS = [
   { x: 0, y: -1, dir: 'up' },
@@ -55,6 +60,13 @@ const DIRS = [
   { x: 0, y: 1, dir: 'down' },
   { x: -1, y: 0, dir: 'left' },
 ];
+
+const DOLLAR_BILLS = Array.from({ length: 20 }).map((_, i) => ({
+  id: i,
+  left: `${Math.random() * 100}%`,
+  delay: `${Math.random() * 2}s`,
+  duration: `${2 + Math.random() * 2}s`
+}));
 
 function getOppositeDir(dir) {
   switch (dir) {
@@ -114,6 +126,8 @@ export default function PacmanGame({ onBack }) {
   const [lives, setLives] = useState(INITIAL_LIVES);
   const [gameState, setGameState] = useState('loading');
   const moveCooldown = useRef(false);
+  const [scale, setScale] = useState(1);
+  const wrapperRef = useRef(null);
 
   // Get the level safely
   const level = LEVELS[levelIdx];
@@ -241,6 +255,44 @@ export default function PacmanGame({ onBack }) {
     }
   }, [collectibles, enemies, player, gameState, level, levelIdx, lives]);
 
+  // Update the useEffect for scaling
+  useEffect(() => {
+    const updateScale = () => {
+      if (!wrapperRef.current) return;
+      
+      // Get the wrapper's dimensions
+      const wrapper = wrapperRef.current;
+      const availableWidth = wrapper.clientWidth - 32; // Account for padding
+      const availableHeight = wrapper.clientHeight - 32;
+      
+      // Calculate game dimensions
+      const gameWidth = level[0].length * TILE_SIZE;
+      const gameHeight = level.length * TILE_SIZE;
+      
+      // Calculate scale to fit both dimensions
+      const scaleX = availableWidth / gameWidth;
+      const scaleY = availableHeight / gameHeight;
+      
+      // Use the smaller scale to ensure everything fits
+      const newScale = Math.min(scaleX, scaleY, 1);
+      setScale(newScale);
+    };
+
+    // Initial scale calculation
+    updateScale();
+
+    // Add resize observer for more reliable resizing
+    const resizeObserver = new ResizeObserver(updateScale);
+    if (wrapperRef.current) {
+      resizeObserver.observe(wrapperRef.current);
+    }
+
+    // Cleanup
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [level]);
+
   function handleRestart() {
     // Direct reset without relying on the useEffect
     setLevelIdx(0);
@@ -267,82 +319,168 @@ export default function PacmanGame({ onBack }) {
   }
 
   return (
-    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-black">
+    <div className="relative w-full h-screen flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat" 
+      style={{ 
+        backgroundImage: 'url("/assets/pokemonwallpaper.jpg")'
+      }}
+    >
       <button
         onClick={onBack}
-        className="absolute top-4 left-4 px-4 py-2 border border-white hover:bg-white hover:text-black transition-colors duration-300 z-10"
+        className="absolute top-4 left-4 px-4 py-2 text-pink-500 bg-pink-100 rounded-full w-10 h-10 flex items-center justify-center hover:bg-pink-200 text-2xl font-bold shadow z-30"
+        title="Inchide"
       >
-        Back
+        ×
       </button>
 
-      <div style={{ width: level[0].length * TILE_SIZE, height: level.length * TILE_SIZE, position: 'relative', border: '4px solid #222' }}>
-        {level.map((row, y) => row.split('').map((cell, x) => cell === '1' && (
-          <div key={`${x}-${y}`} style={{ position: 'absolute', left: x * TILE_SIZE, top: y * TILE_SIZE, width: TILE_SIZE, height: TILE_SIZE, background: '#222' }} />
-        )))}
-        {collectibles.map((c, i) => (
-          <img key={i} src={COLLECTIBLE_IMG} alt="dot" style={{ position: 'absolute', left: c.x * TILE_SIZE + TILE_SIZE / 4, top: c.y * TILE_SIZE + TILE_SIZE / 4, width: TILE_SIZE / 2, height: TILE_SIZE / 2, pointerEvents: 'none' }} />
-        ))}
-        <img 
-          src={PLAYER_IMG} 
-          alt="player" 
-          style={{ 
-            position: 'absolute', 
-            left: player.x * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-            top: player.y * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-            width: ENTITY_SIZE, 
-            height: ENTITY_SIZE, 
-            zIndex: 2, 
-            pointerEvents: 'none',
-            transition: 'left 0.12s linear, top 0.12s linear' 
-          }} 
-        />
-        {enemies.map((e, i) => (
-          <img 
-            key={i} 
-            src={ENEMY_IMG} 
-            alt="enemy" 
+      <div
+        ref={wrapperRef}
+        className="relative w-full h-full flex items-center justify-center p-4 overflow-hidden"
+      >
+        <div 
+          style={{
+            width: level[0].length * TILE_SIZE,
+            height: level.length * TILE_SIZE,
+            position: 'relative',
+            border: '8px solid #FFB6C1',
+            borderRadius: '20px',
+            boxShadow: '0 0 40px rgba(255,182,193,0.5)',
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
+            willChange: 'transform',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            WebkitTransform: `scale(${scale})`,
+          }}
+          className="game-container"
+        >
+          <div 
             style={{ 
-              position: 'absolute', 
-              left: e.x * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-              top: e.y * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
-              width: ENTITY_SIZE, 
-              height: ENTITY_SIZE, 
-              zIndex: 2, 
-              pointerEvents: 'none',
-              transition: 'left 0.3s linear, top 0.3s linear' 
-            }} 
-          />
-        ))}
+              position: 'relative', 
+              width: '100%', 
+              height: '100%',
+            }}
+          >
+            {level.map((row, y) => row.split('').map((cell, x) => cell === '1' && (
+              <div 
+                key={`${x}-${y}`} 
+                style={{ 
+                  position: 'absolute', 
+                  left: x * TILE_SIZE, 
+                  top: y * TILE_SIZE, 
+                  width: TILE_SIZE, 
+                  height: TILE_SIZE, 
+                  background: 'rgba(120, 180, 255, 0.85)',
+                  borderRadius: '6px',
+                  opacity: 0.9,
+                  boxSizing: 'border-box',
+                }} 
+              />
+            )))}
+            {collectibles.map((c, i) => (
+              <img 
+                key={i} 
+                src={COLLECTIBLE_IMG} 
+                alt="matcha" 
+                style={{ 
+                  position: 'absolute', 
+                  left: c.x * TILE_SIZE + TILE_SIZE / 6,
+                  top: c.y * TILE_SIZE + TILE_SIZE / 6,
+                  width: TILE_SIZE * 0.7,
+                  height: TILE_SIZE * 0.7,
+                  pointerEvents: 'none',
+                  filter: 'drop-shadow(0 0 2px rgba(255, 182, 193, 0.5))'
+                }} 
+              />
+            ))}
+            <img 
+              src={PLAYER_IMG} 
+              alt="player" 
+              style={{ 
+                position: 'absolute', 
+                left: player.x * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
+                top: player.y * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
+                width: ENTITY_SIZE, 
+                height: ENTITY_SIZE, 
+                zIndex: 2, 
+                pointerEvents: 'none',
+                transition: 'left 0.12s linear, top 0.12s linear' 
+              }} 
+            />
+            {enemies.map((e, i) => (
+              <img 
+                key={i} 
+                src={ENEMY_IMGS[i % ENEMY_IMGS.length]} 
+                alt="enemy" 
+                style={{ 
+                  position: 'absolute', 
+                  left: e.x * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
+                  top: e.y * TILE_SIZE + (TILE_SIZE - ENTITY_SIZE) / 2, 
+                  width: ENTITY_SIZE, 
+                  height: ENTITY_SIZE, 
+                  zIndex: 2, 
+                  pointerEvents: 'none',
+                  transition: 'left 0.3s linear, top 0.3s linear' 
+                }} 
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-between w-full max-w-lg mt-4 px-4">
-        <div className="text-lg text-white">Lives: {lives}</div>
-        <div className="text-lg text-white">Level: {levelIdx + 1}</div>
+      <div className="flex justify-between w-full max-w-3xl px-4 absolute bottom-4">
+        <div className="text-3xl text-pink-600 font-medium bg-pink-100 bg-opacity-80 px-4 py-2 rounded-lg shadow-lg">Lives: {lives}</div>
+        <div className="text-3xl text-pink-600 font-medium bg-pink-100 bg-opacity-80 px-4 py-2 rounded-lg shadow-lg">Level: {levelIdx + 1}</div>
       </div>
 
       {gameState === 'finalwin' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-20">
-          <div className="text-4xl text-white text-center p-8 border border-white">
-            🎉 You finished all levels!<br/>
+        <div className="absolute inset-0 flex items-center justify-center bg-pink-100 bg-opacity-90 z-20">
+          <div className="text-center p-12 border-4 border-pink-300 rounded-2xl bg-white bg-opacity-90 max-w-2xl w-full mx-4 relative overflow-hidden">
+            {/* Dollar bills animation */}
+            {DOLLAR_BILLS.map(bill => (
+              <div
+                key={bill.id}
+                className="absolute text-4xl animate-fall"
+                style={{
+                  left: bill.left,
+                  top: '-10%',
+                  animationDelay: bill.delay,
+                  animationDuration: bill.duration
+                }}
+              >
+                💵
+              </div>
+            ))}
+            
+            <img 
+              src="/assets/matcha.png" 
+              alt="Victory" 
+              className="w-64 h-64 mx-auto mb-6 animate-bounce"
+            />
+            <h2 className="text-5xl text-pink-600 mb-6">AI CÂȘTIGAT GNG!!! ❤️❤️‍🩹❤️‍🩹</h2>
+            <p className="text-3xl text-pink-500 mb-8">Ai strâns toate matcha-urile!</p>
             <button 
-              className="mt-4 px-6 py-2 text-xl border border-white hover:bg-white hover:text-black"
+              className="px-8 py-4 text-2xl border-4 border-pink-300 hover:bg-pink-300 hover:text-white rounded-xl transition-colors duration-300"
               onClick={handleRestart}
             >
-              Restart
+              Joacă din nou
             </button>
           </div>
         </div>
       )}
       
       {gameState === 'lose' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-20">
-          <div className="text-4xl text-white text-center p-8 border border-white">
-            Game Over<br/>
+        <div className="absolute inset-0 flex items-center justify-center bg-pink-100 bg-opacity-90 z-20">
+          <div className="text-center p-8">
+            <img 
+              src={GAMEOVER_IMG} 
+              alt="Game Over" 
+              className="w-96 h-96 mb-4 rounded-xl"
+            />
             <button 
-              className="mt-4 px-6 py-2 text-xl border border-white hover:bg-white hover:text-black"
+              className="px-6 py-2 text-xl border-2 border-pink-300 hover:bg-pink-300 hover:text-white rounded-lg transition-colors duration-300"
               onClick={handleRestart}
             >
-              Restart
+              Try Again
             </button>
           </div>
         </div>

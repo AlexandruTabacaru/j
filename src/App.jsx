@@ -4,11 +4,22 @@ import PacmanGame from './components/PacmanGame'
 import PhotoGallery from './components/PhotoGallery'
 import VideoPlayer from './components/VideoPlayer'
 import DungeonGame from './components/DungeonGame'
+import StartupAnimation from './components/StartupAnimation'
 
 function App() {
-  const [currentSection, setCurrentSection] = useState('menu')
+  const [currentSection, setCurrentSection] = useState('startup')
+  const [showStartup, setShowStartup] = useState(true)
+
+  const handleStartupComplete = () => {
+    setShowStartup(false)
+    setCurrentSection('menu')
+  }
 
   const renderSection = () => {
+    if (showStartup) {
+      return <StartupAnimation onComplete={handleStartupComplete} />
+    }
+
     switch (currentSection) {
       case 'menu':
         return <MainMenu onSelect={setCurrentSection} />

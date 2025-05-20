@@ -204,44 +204,64 @@ button:focus-visible {
 }
 
 .heart1 {
-  top: 10%; left: 8%;
-  width: 40px;
-  animation: floatHeart 6s ease-in-out infinite;
-}
-.heart2 {
-  top: 70%; left: 85%;
-  width: 32px;
-  animation: floatHeart 7s ease-in-out infinite reverse;
-}
-.heart3 {
-  top: 40%; left: 20%;
-  width: 36px;
+  top: 5%; left: 5%;
+  width: 80px;
   animation: floatHeart 8s ease-in-out infinite;
 }
-.heart4 {
-  bottom: 15%; right: 18%;
-  width: 44px;
+.heart2 {
+  top: 80%; left: 90%;
+  width: 65px;
   animation: floatHeart 9s ease-in-out infinite reverse;
 }
+.heart3 {
+  top: 30%; left: 10%;
+  width: 70px;
+  animation: floatHeart 10s ease-in-out infinite;
+}
+.heart4 {
+  bottom: 10%; right: 10%;
+  width: 85px;
+  animation: floatHeart 11s ease-in-out infinite reverse;
+}
 .heart5 {
-  top: 55%; right: 30%;
-  width: 28px;
-  animation: floatHeart 7.5s ease-in-out infinite;
+  top: 45%; right: 20%;
+  width: 60px;
+  animation: floatHeart 9.5s ease-in-out infinite;
 }
 .poke1 {
   bottom: 12%; left: 15%;
-  width: 60px;
+  width: 200px;
   animation: floatPoke 8s ease-in-out infinite;
 }
 .poke2 {
   top: 20%; right: 10%;
-  width: 50px;
+  width: 200px;
   animation: floatPoke 9s ease-in-out infinite reverse;
 }
 .poke1-bigger {
-  bottom: 8%; left: 10%;
+  bottom: 5%; left: 5%;
   width: 200px;
-  animation: floatPoke 8s ease-in-out infinite;
+  animation: floatPoke 10s ease-in-out infinite;
+}
+.poke3 {
+  top: 15%; left: 40%;
+  width: 280px;
+  animation: floatPoke 9.5s ease-in-out infinite;
+}
+.poke4 {
+  bottom: 2%; right: 35%;
+  width: 500px;
+  animation: floatPoke 10s ease-in-out infinite reverse;
+}
+.poke5 {
+  top: 35%; right: 5%;
+  width: 300px;
+  animation: floatPoke 9s ease-in-out infinite;
+}
+.poke6 {
+  top: 35%; left: 1%;
+  width: 320px;
+  animation: floatPoke 10.5s ease-in-out infinite;
 }
 
 @keyframes floatHeart {
@@ -273,4 +293,34 @@ button:focus-visible {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   80% { opacity: 1; }
   100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10%) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-fall {
+  animation: fall linear infinite;
+}
+
+.game-container {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  outline: none !important;
+  border: none !important;
+  transform-origin: center center;
+}
+
+.game-container * {
+  outline: none !important;
+  box-sizing: border-box;
 }

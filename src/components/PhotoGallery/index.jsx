@@ -306,8 +306,8 @@ const PhotoGallery = ({ onBack }) => {
                 </div>
               ) : (
                 <div className="w-full flex items-center justify-center mt-2 mb-6">
-                  <p className="polaroid-label text-white text-center w-full" style={{ fontSize: '1.3em', marginBottom: '-1.5rem' }}>
-                    {selectedPhoto.description || <span className="italic text-gray-400">(Ii punem titlu?..)</span>}
+                  <p className="polaroid-label text-white text-center w-full" style={{ fontSize: '2.3em', marginBottom: '-1.5rem' }}>
+                    {selectedPhoto.description || <span className="italic text-gray-700">(Ii punem titlu?..)</span>}
                   </p>
                   <button
                     onClick={() => setIsEditingLabel(true)}
