@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,6 +26,8 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  background: #ffe4f7;
 }
 
 #root {
@@ -39,9 +46,9 @@ a:hover {
   color: #535bf2;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  color: #e75480;
 }
 
 button {
@@ -74,4 +81,196 @@ button:focus-visible {
   button {
     background-color: #3a2f2f;
   }
+}
+
+.polaroid-css-frame {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.13);
+  border-radius: 12px;
+  background: transparent;
+  margin-bottom: 8px;
+  transition: transform 0.15s;
+}
+.polaroid-css-frame:hover {
+  transform: rotate(-2deg) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.16);
+}
+.polaroid-label {
+  font-family: 'Shadows Into Light', cursive;
+  font-size: 1.15em;
+  color: #222;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,0.08);
+  white-space: pre-line;
+}
+
+.main-menu-bg {
+  background: linear-gradient(rgba(255,192,203,0.45), rgba(255,192,203,0.45)), url('/assets/pokemonmainmenu.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.photo-gallery-bg {
+  background: linear-gradient(rgba(255,255,255,0.7), rgba(255,192,203,0.3)), url('/assets/pokemonphotos.jpg') no-repeat center center/cover;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.pink-btn {
+  background: linear-gradient(90deg, #ffb6e6 0%, #ff69b4 100%);
+  color: white;
+  border-radius: 9999px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(255,105,180,0.15);
+  transition: background 0.2s;
+}
+.pink-btn:hover {
+  background: linear-gradient(90deg, #ff69b4 0%, #ffb6e6 100%);
+}
+
+.section-title {
+  color: #e75480;
+  font-size: 2.5rem;
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px #fff0fa;
+}
+
+.title-fancy {
+  font-family: 'Fredoka One', cursive;
+  font-size: 3.2em;
+  color: #e75480;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #fff0fa;
+}
+
+/* Custom scrollbar for gallery */
+.photo-gallery-bg .overflow-y-auto::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+.photo-gallery-bg .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #ffb6e6;
+  border-radius: 8px;
+  border: 2px solid #fff0fa;
+}
+.photo-gallery-bg .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #ff69b4;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes menuFloat {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  20% { transform: rotate(2deg); }
+  40% { transform: rotate(-2deg); }
+  60% { transform: rotate(2deg); }
+  80% { transform: rotate(-2deg); }
+}
+
+.main-menu-bg-gif {
+  background: linear-gradient(rgba(255,192,203,0.45), rgba(255,192,203,0.45)), url('/assets/pokemonmainmenu.gif') no-repeat center center/cover;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+.floating-title {
+  animation: float 3s ease-in-out infinite;
+  display: inline-block;
+}
+
+.menu-card-float {
+  animation: menuFloat 4s ease-in-out infinite;
+}
+
+.wiggle-on-hover:hover {
+  animation: wiggle 0.5s;
+}
+
+.floating-deco {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.heart1 {
+  top: 10%; left: 8%;
+  width: 40px;
+  animation: floatHeart 6s ease-in-out infinite;
+}
+.heart2 {
+  top: 70%; left: 85%;
+  width: 32px;
+  animation: floatHeart 7s ease-in-out infinite reverse;
+}
+.heart3 {
+  top: 40%; left: 20%;
+  width: 36px;
+  animation: floatHeart 8s ease-in-out infinite;
+}
+.heart4 {
+  bottom: 15%; right: 18%;
+  width: 44px;
+  animation: floatHeart 9s ease-in-out infinite reverse;
+}
+.heart5 {
+  top: 55%; right: 30%;
+  width: 28px;
+  animation: floatHeart 7.5s ease-in-out infinite;
+}
+.poke1 {
+  bottom: 12%; left: 15%;
+  width: 60px;
+  animation: floatPoke 8s ease-in-out infinite;
+}
+.poke2 {
+  top: 20%; right: 10%;
+  width: 50px;
+  animation: floatPoke 9s ease-in-out infinite reverse;
+}
+.poke1-bigger {
+  bottom: 8%; left: 10%;
+  width: 200px;
+  animation: floatPoke 8s ease-in-out infinite;
+}
+
+@keyframes floatHeart {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.1); }
+}
+@keyframes floatPoke {
+  0%, 100% { transform: translateY(0) rotate(-5deg);}
+  50% { transform: translateY(-20px) rotate(5deg);}
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  opacity: 0.8;
+  z-index: 2;
+  animation: confetti-float 3.5s linear infinite;
+}
+.confetti0 { background: #ffb6e6; animation-delay: 0s; }
+.confetti1 { background: #ffe066; animation-delay: 0.5s; }
+.confetti2 { background: #b5ead7; animation-delay: 1s; }
+.confetti3 { background: #ffdac1; animation-delay: 1.5s; }
+.confetti4 { background: #c7ceea; animation-delay: 2s; }
+.confetti5 { background: #f7a8b8; animation-delay: 2.5s; }
+
+@keyframes confetti-float {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
 }

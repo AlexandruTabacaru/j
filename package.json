@@ -9,8 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "electron:dev": "concurrently \"vite\" \"electron .\"",
-    "electron:build": "vite build && electron-builder"
+    "electron:dev": "cross-env NODE_ENV=development concurrently \"vite\" \"electron .\"",
+    "electron:build": "vite build && electron-builder --win portable --publish never"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -27,6 +27,7 @@
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1",
     "eslint": "^8.55.0",
@@ -40,8 +41,9 @@
   },
   "build": {
     "appId": "com.jasmina.birthday",
-    "mac": {
-      "category": "public.app-category.games"
+    "productName": "Jasmina Birthday",
+    "win": {
+      "target": ["portable"]
     },
     "files": [
       "dist/**/*",
