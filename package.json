@@ -4,13 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "main": "electron/main.js",
+  "homepage": "https://yourusername.github.io/j",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "electron:dev": "cross-env NODE_ENV=development concurrently \"vite\" \"electron .\"",
-    "electron:build": "vite build && electron-builder --win portable --publish never"
+    "electron:build": "vite build && electron-builder --win portable --publish never",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -33,6 +36,7 @@
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.4.32",
     "sass": "^1.88.0",
     "sass-embedded": "^1.88.0",
